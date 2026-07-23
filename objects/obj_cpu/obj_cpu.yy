@@ -11,8 +11,8 @@
   "name":"obj_cpu",
   "overriddenProperties":[],
   "parent":{
-    "name":"Objects",
-    "path":"folders/Objects.yy",
+    "name":"Main",
+    "path":"folders/Objects/Main.yy",
   },
   "parentObjectId":{
     "name":"obj_fighter_parent",

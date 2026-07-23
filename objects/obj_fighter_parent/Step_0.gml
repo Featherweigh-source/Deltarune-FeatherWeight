@@ -223,25 +223,25 @@ switch (state)
         break;
 
     case "special":
-        image_speed = 0;
-        stop_frame += 0.25;
-        image_index = floor(stop_frame);
+    image_speed = 0;
+    stop_frame += 0.25;
+    image_index = floor(stop_frame);
+    
+    var _max_frames = sprite_get_number(sprite_index);
         
-        var _max_frames = sprite_get_number(sprite_index);
-            
-        if (image_index >= _max_frames - 1 && !has_cast_special) {
-            has_cast_special = true;
-            if (variable_instance_exists(id, "cast_special") && cast_special != noone) {
-                cast_special();
-            }
+    if (stop_frame >= _max_frames - 1 && !has_cast_special) {
+        has_cast_special = true;
+        if (is_method(cast_special)) {
+            cast_special();
         }
+    }
 
-        if (stop_frame >= _max_frames - 1) {
-            state = "move";
-            stop_frame = 0;
-            has_cast_special = false;
-        }
-        break;
+    if (stop_frame >= _max_frames) {
+        state = "move";
+        stop_frame = 0;
+        has_cast_special = false;
+    }
+    break;
 
     case "attack":
         image_speed = 0;

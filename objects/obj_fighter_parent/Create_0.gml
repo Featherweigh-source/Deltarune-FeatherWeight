@@ -1,4 +1,6 @@
-character_id = variable_global_exists("p1_character_id") ? global.p1_character_id : "kris";
+if (!variable_instance_exists(id, "character_id")) {
+    character_id = variable_global_exists("p1_character_id") ? global.p1_character_id : "kris";
+}
 
 var _data = get_fighter_data(character_id);
 sprites = _data.sprites;

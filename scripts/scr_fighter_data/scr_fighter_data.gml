@@ -43,7 +43,7 @@ function get_fighter_data(_character_id) {
         
         "susie": {
             sprites: {
-                healthbar    : krishpbar,   
+                healthbar    : susiehpbar,   
                 idle         : susieidle,
                 walk         : susie_run,
                 run          : susie_run,
@@ -79,34 +79,82 @@ function get_fighter_data(_character_id) {
             },
 
             cast_special: function() {
-                var _target_inst = noone;
-                var _self_id = id;
-                
-                with (obj_fighter_parent) {
-                    if (id != _self_id && !isDead) {
-                        _target_inst = id;
-                    }
-                }
-
-                var _spawn_x = x + (facingDir * 32);
-                var _spawn_y = y - 16;
-                
-                var _proj = instance_create_depth(_spawn_x, _spawn_y, depth - 1, obj_rudebuster);
-                with (_proj) {
-                    owner = _self_id;
-                    target = _target_inst;
-                    spd = 8;
-                    lifetime = 120;
-                    homing_intensity = 0.2; 
-                    damage = _self_id.attacks.special.damage;
-                    tp = variable_struct_exists(_self_id.attacks.special, "tpvalue") ? _self_id.attacks.special.tpvalue : 10;
-                    knockback_x = variable_struct_exists(_self_id.attacks.special, "knockback_x") ? _self_id.attacks.special.knockback_x : 8;
-                    knockback_y = variable_struct_exists(_self_id.attacks.special, "knockback_y") ? _self_id.attacks.special.knockback_y : -4;
-                    direction = (_self_id.facingDir == 1) ? 0 : 180;
-                    image_angle = direction;
-                }
-            }
+                show_debug_message("Casting Special!")
+    var _target_inst = noone;
+    var _self = id;
+    
+    with (obj_fighter_parent) {
+        if (id != _self && !isDead) {
+            _target_inst = id;
         }
+    }
+
+    var _spawn_x = x + (facingDir * 32);
+    var _spawn_y = y - 16;
+    
+    var _sp_data = struct_exists(attacks, "special") ? attacks.special : {};
+    var _dmg  = variable_struct_exists(_sp_data, "damage") ? _sp_data.damage : 15;
+    var _tp   = variable_struct_exists(_sp_data, "tpvalue") ? _sp_data.tpvalue : 10;
+    var _kb_x = variable_struct_exists(_sp_data, "knockback_x") ? _sp_data.knockback_x : 8;
+    var _kb_y = variable_struct_exists(_sp_data, "knockback_y") ? _sp_data.knockback_y : -4;
+    
+    var _proj = instance_create_depth(_spawn_x, _spawn_y, depth - 1, obj_rudebuster);
+    with (_proj) {
+        owner = _self;
+        target = _target_inst;
+        spd = 8;
+        lifetime = 120;
+        homing_intensity = 0.2; 
+        damage = _dmg;
+        tp = _tp;
+        knockback_x = _kb_x;
+        knockback_y = _kb_y;
+        direction = (_self.facingDir == 1) ? 0 : 180;
+        image_angle = direction;
+    }
+}
+        },
+        
+        "ralsei": {
+            sprites: {
+                healthbar    : ralseihpbar,   
+                idle         : RalIdle1,
+                walk         : RalWalk,
+                run          : RalHover,
+                stop         : kris_stop,
+                crouch       : kriscrouch,
+                jump_start   : krisjumpstart,
+                jump         : RalHover,
+                jump_norm     : RalHover,
+                fall_straight: RalHover,
+                fall_slanted : RalHover,
+                walk_fall    : RalHover,
+                land_norm    : RalHover,
+                land_slant   : RalHover,
+                slash1       : RalAtk,
+                slash2       : RalAtk,
+                slash3       : RalAtk,
+                air_slash1   : RalAtk,
+                special      : RalHeal
+            },
+
+            attacks: {
+                hp : 100,
+                slash1:     { damage: 3,  knockback_x: 3, knockback_y: -2,  lifetime: 4, tpvalue: 3, sprite: krisslash1hitbox },
+                slash2:     { damage: 5,  knockback_x: 4, knockback_y: -3,  lifetime: 4, tpvalue: 3, sprite: krisslash2hitbox },
+                slash3:     { damage: 6,  knockback_x: 8, knockback_y: -6,  lifetime: 6, tpvalue: 3, sprite: krisslash3hitbox },
+                air_slash1: { damage: 6,  knockback_x: 4, knockback_y:  2,  lifetime: 5, tpvalue: 3, sprite: krisairslashhitbox },
+                special:    { damage: 30, knockback_x: 0, knockback_y: 0, lifetime: 0, tpcost: 32, tpvalue: 0, sprite: krisslash3hitbox }
+            },
+
+            perform_special: function() {
+                audio_play_sound(sndBump, 8, false);
+                if hp < max_hp { hp += attacks.special.damage };
+            },
+
+            cast_special: function() {}
+        },
+        
     };
 
     if (struct_exists(roster, _character_id)) {

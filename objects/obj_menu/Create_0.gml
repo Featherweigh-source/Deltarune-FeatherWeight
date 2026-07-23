@@ -6,8 +6,8 @@ if (!variable_global_exists("p1_respawn_timer"))   global.p1_respawn_timer  = 0;
 if (!variable_global_exists("cpu_count"))   global.cpu_count   = 1;
 if (!variable_global_exists("stock_limit"))  global.stock_limit  = 3;
 
-char_list  = [Kris, Susie];
-char_names = ["KRIS", "SUSIE"];
+char_list  = [Kris, Susie, Ralsei];
+char_names = ["KRIS", "SUSIE", "RALSEI"];
 
 p1_char_index  = 0; 
 cpu_char_index = 1;
