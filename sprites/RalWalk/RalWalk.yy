@@ -28,8 +28,8 @@
   "nineSlice":null,
   "origin":9,
   "parent":{
-    "name":"Ralsei",
-    "path":"folders/Sprites/Ralsei.yy",
+    "name":"Normal",
+    "path":"folders/Sprites/Ralsei/Normal.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

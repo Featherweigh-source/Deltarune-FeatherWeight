@@ -1,3 +1,4 @@
+#region 1. CHARACTER & ATTACK INITIALIZATION
 if (!variable_instance_exists(id, "character_id")) {
     character_id = variable_global_exists("p1_character_id") ? global.p1_character_id : "kris";
 }
@@ -6,63 +7,116 @@ var _data = get_fighter_data(character_id);
 sprites = _data.sprites;
 attacks = _data.attacks;
 
-perform_special = method(id, _data.perform_special);
-cast_special    = method(id, _data.cast_special);
-team_id = 1;
+current_special_type = "down";
+has_cast_special     = false;
 
-has_cast_special = false;
+var _perf_down = struct_exists(_data.perform_special, "down") ? _data.perform_special.down : function() {};
+var _perf_up   = struct_exists(_data.perform_special, "up")   ? _data.perform_special.up   : function() {};
+var _cast_down = struct_exists(_data.cast_special, "down")    ? _data.cast_special.down    : function() {};
+var _cast_up   = struct_exists(_data.cast_special, "up")      ? _data.cast_special.up      : function() {};
 
-isDead = false;
-is_cpu = false;
-moveDir = 0;
-runType = 0;
+perform_special = {
+    down : method(id, _perf_down),
+    up   : method(id, _perf_up)
+};
 
-moveSpd[0] = 3;
-moveSpd[1] = 5;
+cast_special = {
+    down : method(id, _cast_down),
+    up   : method(id, _cast_up)
+};
+#endregion
 
-accel = 0.25;
-fric = 0.82;
-airAccel = 0.18;
-airFric = 0.92;
+#region 2. INPUT 
+function get_fighter_input() {
+    return {
+        left            : keyboard_check(global.key_left),
+        right           : keyboard_check(global.key_right),
+        up              : keyboard_check(global.key_up),
+        down            : keyboard_check(global.key_down),
+        
+        left_pressed    : keyboard_check_pressed(global.key_left),
+        right_pressed   : keyboard_check_pressed(global.key_right),
+        up_pressed      : keyboard_check_pressed(global.key_up),
+        down_pressed    : keyboard_check_pressed(global.key_down),
+        
+        jump            : keyboard_check(global.key_jump),
+        jump_pressed    : keyboard_check_pressed(global.key_jump),
+        run             : keyboard_check(global.key_run),
+        
+        hit_pressed     : keyboard_check_pressed(global.key_slash)
+    };
+}
+#endregion
 
-xspd = 0;
-yspd = 0;
-tp = 0;
-tpmax = 100;
-atkLungeSpd = 1.5;
-
-grav = 0.2;
-termVel = 8;
-jspd = -4.6;
-jumpmax = 1;
-jumpcount = 0;
-jumpHoldTimer = 0;
-jumpHoldFrames = 8;
-onGround = true;
-
-peak_freeze_timer = 0;
-has_peak_frozen = false;
-
-facingDir = 1;
-state = "move";
+#region 3. FIGHTER STATS & STATE VARIABLES
+team_id    = 1;
+isDead     = false;
+is_cpu     = false;
+facingDir  = 1;
+state      = "move";
 stop_frame = 0;
 
-dash_timer_right = 0;
-dash_timer_left = 0;
-is_sprinting = false;
+max_hp = struct_exists(attacks, "hp") ? attacks.hp : 100;
+hp     = max_hp;
+tp     = 0;
+tpmax  = 100;
 
-skid_speed = 0;
+moveDir        = 0;
+runType        = 0;
+moveSpd[0]     = 3;
+moveSpd[1]     = 5;
+accel          = 0.25;
+fric           = 0.82;
+airAccel       = 0.18;
+airFric        = 0.92;
+xspd           = 0;
+yspd           = 0;
+atkLungeSpd    = 1.5;
+grav           = 0.2;
+termVel        = 8;
+jspd           = -4.6;
+jumpmax        = 1;
+jumpcount      = 0;
+jumpHoldTimer  = 0;
+jumpHoldFrames = 8;
+onGround       = true;
+
+peak_freeze_timer = 0;
+has_peak_frozen   = false;
+
+dash_timer_right = 0;
+dash_timer_left  = 0;
+is_sprinting     = false;
+skid_speed       = 0;
 
 can_combo_buffer = false;
-can_air_attack = true;
-combo_step = 0;
+can_air_attack   = true;
+combo_step       = 0;
 
-BufferTime = 6;
-JumpKeyBuffered = false;
+BufferTime         = 6;
+JumpKeyBuffered    = false;
 JumpKeyBufferTimer = 0;
 
-max_hp = attacks.hp;
-hp = max_hp;
+image_xscale = 1;
+mask_index   = spr_player_hitbox;
+#endregion
+
+#region 4. HELPER METHODS & FUNCTIONS
+create_hitbox = function(_attack_data) {
+    var _hb = instance_create_depth(x, y, +1000, obj_hitbox);
+    
+    _hb.owner        = id;
+    _hb.sprite_index = _attack_data.sprite;
+    _hb.mask_index   = _attack_data.sprite;
+    _hb.image_xscale = facingDir;
+    _hb.damage       = _attack_data.damage;
+    _hb.tp           = _attack_data.tpvalue;
+    _hb.knockback_x  = _attack_data.knockback_x * facingDir;
+    _hb.knockback_y  = _attack_data.knockback_y;
+    _hb.lifetime     = _attack_data.lifetime;
+    _hb.image_alpha  = 1;  
+    return _hb;
+};
 
 draw_fighter_hud = function(_x, _y, _scale) {
     if (!variable_struct_exists(sprites, "healthbar")) exit;
@@ -74,7 +128,7 @@ draw_fighter_hud = function(_x, _y, _scale) {
 
     var _hp_percent = clamp(hp / max_hp, 0, 1);
 
-    var _spr = sprites.healthbar;
+    var _spr   = sprites.healthbar;
     var _spr_w = sprite_get_width(_spr) * _scale;
     var _spr_h = sprite_get_height(_spr) * _scale;
 
@@ -106,29 +160,4 @@ draw_fighter_hud = function(_x, _y, _scale) {
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
 };
-
-image_xscale = 1;
-mask_index = spr_player_hitbox;
-
-input = {
-    left: false, right: false, down: false,
-    left_pressed: false, right_pressed: false,
-    jump: false, jump_pressed: false,
-    run: false, hit_pressed: false
-};
-
-create_hitbox = function(_attack_data) {
-    var _hb = instance_create_depth(x, y, +1000, obj_hitbox);
-    
-    _hb.owner = id;
-    _hb.sprite_index = _attack_data.sprite;
-    _hb.mask_index   = _attack_data.sprite;
-    _hb.image_xscale = facingDir;
-    _hb.damage       = _attack_data.damage;
-    _hb.tp           = _attack_data.tpvalue;
-    _hb.knockback_x  = _attack_data.knockback_x * facingDir;
-    _hb.knockback_y  = _attack_data.knockback_y;
-    _hb.lifetime     = _attack_data.lifetime;
-    _hb.image_alpha  = 1;  
-    return _hb;
-};
+#endregion

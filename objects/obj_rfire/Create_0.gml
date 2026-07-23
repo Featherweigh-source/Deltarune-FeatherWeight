@@ -12,8 +12,8 @@ knockback_y = -4;
 facing_dir = 1;
 turn_speed = 0.9;
 
-trail_max_length = 6;
-trail_array = [];
+
+
 
 var _my_owner = owner;
 var _closest_dist = 999999;

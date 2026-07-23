@@ -1,4 +1,17 @@
-var _input = input;
+if (!is_cpu) {
+    input = get_fighter_input();
+}
+
+var _input = variable_instance_exists(id, "input") ? input : {
+    jump_pressed: false,
+    hit_pressed: false,
+    up: false,
+    down: false,
+    left: false,
+    right: false,
+    up_pressed: false,
+    down_pressed: false
+};
 
 if (tp >= tpmax) { tp = tpmax; }
 
@@ -61,10 +74,19 @@ else if (state == "airattack" || state == "hitstun") {
 }
 
 if (JumpKeyBuffered && jumpcount < jumpmax && state != "attack" && state != "airattack" && state != "special" && state != "crouch" && state != "jumpstart" && state != "hitstun") {
-    state = "jumpstart";
-    sprite_index = sprites.jump_start;
-    image_index = 0;
-    image_speed = 1;
+    if (onGround) {
+        state = "jumpstart";
+        sprite_index = sprites.jump_start;
+        image_index = 0;
+        image_speed = 1;
+    } else {
+        JumpKeyBuffered = false;
+        jumpcount++;
+        jumpHoldTimer = 0;
+        yspd = jspd;
+        state = "move";
+        audio_play_sound(sndJump, 8, false);
+    }
 }
 
 if (dash_timer_right > 0) dash_timer_right--;
@@ -127,10 +149,12 @@ if (abs(xspd) > 0.2 && state != "stop" && state != "hitstun") {
 var _subPixel = 0.5;
 
 if (place_meeting(x + xspd, y, Wall)) {
-    var _pixelcheck = _subPixel * sign(xspd);
-    while (!place_meeting(x + _pixelcheck, y, Wall)) { x += _pixelcheck; }
-    xspd = 0; 
-    skid_speed = 0;
+    var _safety_counter = 0;
+    while (!place_meeting(x + sign(xspd), y, Wall) && _safety_counter < 100) {
+        x += sign(xspd);
+        _safety_counter++;
+    }
+    xspd = 0;
 }
 x += xspd;
 
@@ -138,7 +162,7 @@ if (place_meeting(x, y + yspd, Wall)) {
     var _pixelcheck = _subPixel * sign(yspd);
     while (!place_meeting(x, y + _pixelcheck, Wall)) { y += _pixelcheck; }
     yspd = 0;
-}
+};
 
 if (yspd >= 0 && place_meeting(x, y + 1, Wall)) {
     if (!onGround && state != "land" && state != "attack" && state != "special" && state != "hitstun") {
@@ -158,26 +182,50 @@ if ((state == "attack" || state == "airattack") && _input.hit_pressed) {
     can_combo_buffer = true; 
 }
 
-if ((state == "move" || state == "crouch") && _input.down && _input.hit_pressed) {
-    var _sp_cost = 30;
-    if (struct_exists(attacks, "special")) {
-        if (variable_struct_exists(attacks.special, "tpcost")) _sp_cost = attacks.special.tpcost;
-        else if (variable_struct_exists(attacks.special, "tpvalue")) _sp_cost = attacks.special.tpvalue;
-    }
+
+var _up_held   = keyboard_check(global.key_up)   || (struct_exists(input, "up") && input.up);
+var _down_held = keyboard_check(global.key_down) || (struct_exists(input, "down") && input.down);
+var _hit       = input.hit_pressed || keyboard_check_pressed(global.key_slash);
+
+if ((state == "move" || state == "crouch" || state == "jumpstart") && (_up_held || _down_held) && _hit) {
     
+    current_special_type = _up_held ? "up" : "down";
+    
+    var _sp_cost = 30;
+    if (is_struct(attacks) && struct_exists(attacks, "special")) {
+        if (struct_exists(attacks.special, current_special_type)) {
+            var _sp_data = attacks.special[$ current_special_type];
+            if (is_struct(_sp_data)) {
+                if (struct_exists(_sp_data, "tpcost"))       _sp_cost = _sp_data.tpcost;
+                else if (struct_exists(_sp_data, "tpvalue")) _sp_cost = _sp_data.tpvalue;
+            }
+        }
+    }
+
     if (tp >= _sp_cost) {
         tp -= _sp_cost;
         state = "special";
-        sprite_index = sprites.special;
         image_index = 0;
         stop_frame = 0;
         has_cast_special = false;
-        
-        if (variable_instance_exists(id, "perform_special") && perform_special != noone) {
+
+        if (is_struct(sprites) && struct_exists(sprites, "special")) {
+            if (is_struct(sprites.special) && struct_exists(sprites.special, current_special_type)) {
+                sprite_index = sprites.special[$ current_special_type];
+            } else if (!is_struct(sprites.special)) {
+                sprite_index = sprites.special;
+            }
+        }
+
+        if (is_struct(perform_special) && struct_exists(perform_special, current_special_type)) {
+            var _perf_func = perform_special[$ current_special_type];
+            if (is_callable(_perf_func)) _perf_func();
+        } else if (is_callable(perform_special)) {
             perform_special();
         }
     }
 }
+
 else if (state == "move" && onGround && _input.hit_pressed) {
     state = "attack"; 
     combo_step = 1; 
@@ -223,25 +271,29 @@ switch (state)
         break;
 
     case "special":
-    image_speed = 0;
-    stop_frame += 0.25;
-    image_index = floor(stop_frame);
-    
-    var _max_frames = sprite_get_number(sprite_index);
+        image_speed = 0;
+        stop_frame += 0.25;
+        image_index = floor(stop_frame);
         
-    if (stop_frame >= _max_frames - 1 && !has_cast_special) {
-        has_cast_special = true;
-        if (is_method(cast_special)) {
-            cast_special();
+        var _max_frames = sprite_get_number(sprite_index);
+            
+        if (stop_frame >= _max_frames - 1 && !has_cast_special) {
+            has_cast_special = true;
+            
+            if (is_struct(cast_special) && struct_exists(cast_special, current_special_type)) {
+                var _cast_func = cast_special[$ current_special_type];
+                if (is_callable(_cast_func)) _cast_func();
+            } else if (is_callable(cast_special)) {
+                cast_special();
+            }
         }
-    }
 
-    if (stop_frame >= _max_frames) {
-        state = "move";
-        stop_frame = 0;
-        has_cast_special = false;
-    }
-    break;
+        if (stop_frame >= _max_frames) {
+            state = "move";
+            stop_frame = 0;
+            has_cast_special = false;
+        }
+        break;
 
     case "attack":
         image_speed = 0;
@@ -397,5 +449,5 @@ switch (state)
         break;
 }
 
-image_xscale = 1;
+image_xscale = (facingDir != 0) ? facingDir : 1;
 mask_index = spr_player_hitbox;
