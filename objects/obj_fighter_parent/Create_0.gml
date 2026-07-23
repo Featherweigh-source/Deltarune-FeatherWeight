@@ -1,13 +1,14 @@
-var _data    = get_fighter_data(character_id);
-sprites      = _data.sprites;
-attacks      = _data.attacks;
-if (struct_exists(_data, "perform_special")) {
-    perform_special = method(id, _data.perform_special);
-} else {
-    perform_special = noone;
-}
+character_id = variable_global_exists("p1_character_id") ? global.p1_character_id : "kris";
 
+var _data = get_fighter_data(character_id);
+sprites = _data.sprites;
+attacks = _data.attacks;
+
+perform_special = method(id, _data.perform_special);
+cast_special    = method(id, _data.cast_special);
 team_id = 1;
+
+has_cast_special = false;
 
 isDead = false;
 is_cpu = false;
@@ -17,19 +18,24 @@ runType = 0;
 moveSpd[0] = 3;
 moveSpd[1] = 5;
 
+accel = 0.25;
+fric = 0.82;
+airAccel = 0.18;
+airFric = 0.92;
+
 xspd = 0;
 yspd = 0;
 tp = 0;
 tpmax = 100;
 atkLungeSpd = 1.5;
 
-grav = 0.275;
-termVel = 99999;
-jspd = -6;
+grav = 0.2;
+termVel = 8;
+jspd = -4.6;
 jumpmax = 1;
 jumpcount = 0;
 jumpHoldTimer = 0;
-jumpHoldFrames = 18;
+jumpHoldFrames = 8;
 onGround = true;
 
 peak_freeze_timer = 0;
@@ -78,7 +84,7 @@ draw_fighter_hud = function(_x, _y, _scale) {
     var _slot_right  = _top_left_x + (_slot_offset_r * _scale);
     var _slot_bottom = _top_left_y + (_slot_offset_b * _scale);
 
-    var _max_width     = _slot_right - _slot_left;
+    var _max_width    = _slot_right - _slot_left;
     var _current_width = _max_width * _hp_percent;
 
     if (_current_width > 0) {
@@ -98,7 +104,6 @@ draw_fighter_hud = function(_x, _y, _scale) {
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
 };
-
 
 image_xscale = 1;
 mask_index = spr_player_hitbox;
@@ -125,8 +130,3 @@ create_hitbox = function(_attack_data) {
     _hb.image_alpha  = 1;  
     return _hb;
 };
-
-if (!variable_instance_exists(id, "character_id")) {
-    character_id = "kris";
-}
-

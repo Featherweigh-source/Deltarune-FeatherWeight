@@ -1,4 +1,18 @@
-if (!instance_exists(target) || (ai_decision_timer <= 0)) {
+if (variable_instance_exists(id, "hit_by") && instance_exists(hit_by)) {
+    if (hit_by.id != id && !hit_by.isDead && hit_by.team_id != team_id) {
+        target = hit_by;
+        hit_by = noone;
+    }
+}
+
+var _leash_range = 350;
+if (instance_exists(target)) {
+    if (target.isDead || distance_to_object(target) > _leash_range) {
+        target = noone;
+    }
+}
+
+if (!instance_exists(target) || ai_decision_timer <= 0) {
     target = noone;
     var _closest_dist = 999999;
     
@@ -62,7 +76,6 @@ if (instance_exists(target)) {
     }
 
     switch (ai_state) {
-        
         case "approach":
             ai_want_left  = (_dx < -4);
             ai_want_right = (_dx > 4);
@@ -89,6 +102,8 @@ if (instance_exists(target)) {
             ai_want_run   = false;
             break;
     }
+} else {
+    if (ai_decision_timer > 0) ai_decision_timer--;
 }
 
 if (ai_attack_cooldown > 0) ai_attack_cooldown--;

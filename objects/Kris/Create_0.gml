@@ -5,6 +5,9 @@ var _data    = get_fighter_data(character_id);
 sprites      = _data.sprites;
 attacks      = _data.attacks;
 
+perform_special = method(id, _data.perform_special);
+cast_special    = method(id, _data.cast_special);
+
 var _monitor_w = display_get_width();
 var _monitor_h = display_get_height();
 surface_resize(application_surface, _monitor_w, _monitor_h);

@@ -9,8 +9,7 @@
     {"name":"Hitboxes","order":1,"path":"folders/Sprites/Kris/Hitboxes.yy",},
     {"name":"Other","order":3,"path":"folders/Sprites/Other.yy",},
     {"name":"Susie","order":2,"path":"folders/Sprites/Susie.yy",},
-    {"name":"Hitboxes","order":2,"path":"folders/Sprites/Susie/Hitboxes.yy",},
-    {"name":"Normal","order":1,"path":"folders/Sprites/Susie/Normal.yy",},
+    {"name":"Hitboxes","order":1,"path":"folders/Sprites/Susie/Hitboxes.yy",},
   ],
   "ResourceOrderSettings":[
     {"name":"Kris","order":8,"path":"objects/Kris/Kris.yy",},

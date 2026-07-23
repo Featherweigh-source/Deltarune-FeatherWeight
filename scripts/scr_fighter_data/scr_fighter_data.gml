@@ -36,7 +36,9 @@ function get_fighter_data(_character_id) {
                 xspd = facingDir * atkLungeSpd * 1.2; 
                 audio_play_sound(sndCritical, 8, false);
                 create_hitbox(attacks.special);
-            }
+            },
+
+            cast_special: function() {}
         },
         
         "susie": {
@@ -72,22 +74,14 @@ function get_fighter_data(_character_id) {
             },
             
             perform_special: function() {
-                var _cost = 50;
-                if (variable_struct_exists(attacks.special, "tpcost")) _cost = attacks.special.tpcost;
-                else if (variable_struct_exists(attacks.special, "tpvalue")) _cost = attacks.special.tpvalue;
-                
-                if (tp >= _cost) {
-                    tp -= _cost;
-                    xspd = facingDir * atkLungeSpd * 0.5;
-                    audio_play_sound(sndCritical, 8, false);
-
-                    has_cast_special = false;
-                }
+                xspd = facingDir * atkLungeSpd * 0.5;
+                audio_play_sound(sndCritical, 8, false);
             },
 
-            spawn_rude_buster: function() {
+            cast_special: function() {
                 var _target_inst = noone;
                 var _self_id = id;
+                
                 with (obj_fighter_parent) {
                     if (id != _self_id && !isDead) {
                         _target_inst = id;
@@ -102,9 +96,12 @@ function get_fighter_data(_character_id) {
                     owner = _self_id;
                     target = _target_inst;
                     spd = 8;
-                    turn_speed = 3;
-                    lifetime = 180;
+                    lifetime = 120;
+                    homing_intensity = 0.2; 
                     damage = _self_id.attacks.special.damage;
+                    tp = variable_struct_exists(_self_id.attacks.special, "tpvalue") ? _self_id.attacks.special.tpvalue : 10;
+                    knockback_x = variable_struct_exists(_self_id.attacks.special, "knockback_x") ? _self_id.attacks.special.knockback_x : 8;
+                    knockback_y = variable_struct_exists(_self_id.attacks.special, "knockback_y") ? _self_id.attacks.special.knockback_y : -4;
                     direction = (_self_id.facingDir == 1) ? 0 : 180;
                     image_angle = direction;
                 }

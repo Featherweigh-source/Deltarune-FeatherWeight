@@ -14,7 +14,23 @@ if (p1_respawn_timer > 0) {
     p1_respawn_timer--;
 } else if (p1_respawn_timer == 0) {
     var _p1 = instance_create_layer(p1_spawn_x, p1_spawn_y, "Instances", global.p1_selected_char);
-    _p1.is_cpu = false;
+    
+    with (_p1) {
+        is_cpu = false;
+        team_id = 1;
+        
+        if (variable_global_exists("p1_character_id")) {
+            character_id = global.p1_character_id;
+        }
+        
+        var _data = get_fighter_data(character_id);
+        sprites = _data.sprites;
+        attacks = _data.attacks;
+        perform_special = method(id, _data.perform_special);
+        cast_special    = method(id, _data.cast_special);
+        sprite_index = sprites.idle;
+    }
+    
     p1_respawn_timer = -1;
 }
 
@@ -31,12 +47,30 @@ if (global.spawn_cpu) {
                 
                 with (_cpu_inst) {
                     is_cpu = true;
+                    team_id = 2;
                     stocks_left = (other.stock_limit == 0) ? 0 : (_remaining_stocks - 1);
                     character_id = string_lower(object_get_name(global.cpu_selected_char));
                     var _data = get_fighter_data(character_id);
                     sprites = _data.sprites;
                     attacks = _data.attacks;
+                    perform_special = method(id, _data.perform_special);
+                    cast_special    = method(id, _data.cast_special);
                     sprite_index = sprites.idle;
+                    
+                    target = noone;
+                    ai_decision_timer = 0;
+                    
+                    input = {
+                        left         : false,
+                        right        : false,
+                        down         : false,
+                        left_pressed : false,
+                        right_pressed: false,
+                        jump         : false,
+                        jump_pressed : false,
+                        run          : false,
+                        hit_pressed  : false
+                    };
                 }
             }
             
