@@ -1,0 +1,1 @@
+draw_sprite_ext(sprite_index, image_index, x, y, facingDir, 1, 0, make_color_rgb(255, 160, 160), 1);
