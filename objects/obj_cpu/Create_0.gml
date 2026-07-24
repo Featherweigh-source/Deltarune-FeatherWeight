@@ -12,7 +12,31 @@ hit_by = noone;
 ai_decision_timer      = 0;
 ai_decision_interval   = 10;
 
-ai_attack_range        = sprite_get_width(sprites.slash1)
+var _calculated_reach = 55;
+
+var _atk_data = noone;
+if (is_struct(attacks)) {
+    if (struct_exists(attacks, "slash1"))      _atk_data = attacks.slash1;
+    else if (struct_exists(attacks, "atk1"))   _atk_data = attacks.atk1;
+    else if (struct_exists(attacks, "attack1")) _atk_data = attacks.attack1;
+}
+
+if (is_struct(_atk_data) && struct_exists(_atk_data, "sprite")) {
+    var _spr      = _atk_data.sprite;
+    var _spr_w    = sprite_get_width(_spr);
+    var _x_offset = sprite_get_xoffset(_spr);
+
+    _calculated_reach = _spr_w - _x_offset;
+} 
+else if (is_struct(sprites) && struct_exists(sprites, "slash1")) {
+    var _spr      = sprites.slash1;
+    var _spr_w    = sprite_get_width(_spr);
+    var _x_offset = sprite_get_xoffset(_spr);
+    
+    _calculated_reach = max(45, _spr_w - _x_offset);
+}
+
+ai_attack_range = max(40, _calculated_reach - 10);
 ai_special_range       = 120;
 ai_run_range           = 110;
 ai_attack_cooldown     = 0;

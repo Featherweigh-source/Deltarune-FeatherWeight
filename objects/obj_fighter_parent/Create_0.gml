@@ -97,6 +97,8 @@ BufferTime         = 6;
 JumpKeyBuffered    = false;
 JumpKeyBufferTimer = 0;
 
+drawalpha = 0;
+takendmg = 0;
 
 image_xscale = 1;
 mask_index   = spr_player_hitbox;

@@ -9,6 +9,7 @@ if (instance_exists(other.owner) && other.owner != id) {
         
         audio_play_sound(sndCritical, 8, false);
         hp -= other.damage;
+        takendmg = other.damage;
         
         var _hit_tp = variable_instance_exists(other, "tp") ? other.tp : 10;
         
@@ -25,5 +26,6 @@ if (instance_exists(other.owner) && other.owner != id) {
         }
         
         with (other) { instance_destroy(); }
+        drawalpha = 1;
     }
 }

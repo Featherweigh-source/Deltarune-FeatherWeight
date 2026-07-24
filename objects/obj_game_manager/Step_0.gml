@@ -26,8 +26,22 @@ if (p1_respawn_timer > 0) {
         var _data = get_fighter_data(character_id);
         sprites = _data.sprites;
         attacks = _data.attacks;
-        perform_special = method(id, _data.perform_special);
-        cast_special    = method(id, _data.cast_special);
+
+        var _perf_down = struct_exists(_data.perform_special, "down") ? _data.perform_special.down : function() {};
+        var _perf_up   = struct_exists(_data.perform_special, "up")   ? _data.perform_special.up   : function() {};
+        var _cast_down = struct_exists(_data.cast_special, "down")    ? _data.cast_special.down    : function() {};
+        var _cast_up   = struct_exists(_data.cast_special, "up")      ? _data.cast_special.up      : function() {};
+
+        perform_special = {
+            down : method(id, _perf_down),
+            up   : method(id, _perf_up)
+        };
+
+        cast_special = {
+            down : method(id, _cast_down),
+            up   : method(id, _cast_up)
+        };
+
         sprite_index = sprites.idle;
     }
     
@@ -53,23 +67,40 @@ if (global.spawn_cpu) {
                     var _data = get_fighter_data(character_id);
                     sprites = _data.sprites;
                     attacks = _data.attacks;
-                    perform_special = method(id, _data.perform_special);
-                    cast_special    = method(id, _data.cast_special);
+
+                    var _perf_down = struct_exists(_data.perform_special, "down") ? _data.perform_special.down : function() {};
+                    var _perf_up   = struct_exists(_data.perform_special, "up")   ? _data.perform_special.up   : function() {};
+                    var _cast_down = struct_exists(_data.cast_special, "down")    ? _data.cast_special.down    : function() {};
+                    var _cast_up   = struct_exists(_data.cast_special, "up")      ? _data.cast_special.up      : function() {};
+
+                    perform_special = {
+                        down : method(id, _perf_down),
+                        up   : method(id, _perf_up)
+                    };
+
+                    cast_special = {
+                        down : method(id, _cast_down),
+                        up   : method(id, _cast_up)
+                    };
+
                     sprite_index = sprites.idle;
                     
                     target = noone;
                     ai_decision_timer = 0;
                     
                     input = {
-                        left         : false,
-                        right        : false,
-                        down         : false,
-                        left_pressed : false,
-                        right_pressed: false,
-                        jump         : false,
-                        jump_pressed : false,
-                        run          : false,
-                        hit_pressed  : false
+                        left          : false,
+                        right         : false,
+                        up            : false,
+                        down          : false,
+                        left_pressed  : false,
+                        right_pressed : false,
+                        up_pressed    : false,
+                        down_pressed  : false,
+                        jump          : false,
+                        jump_pressed  : false,
+                        run           : false,
+                        hit_pressed   : false
                     };
                 }
             }
@@ -78,3 +109,6 @@ if (global.spawn_cpu) {
         }
     }
 }
+
+if p1_stocks_left <= 0
+{ room_goto(rm_main_menu) };

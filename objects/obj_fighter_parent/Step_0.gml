@@ -451,3 +451,5 @@ switch (state)
 
 image_xscale = (facingDir != 0) ? facingDir : 1;
 mask_index = spr_player_hitbox;
+
+if (drawalpha > 0) { drawalpha -= 0.05 };
