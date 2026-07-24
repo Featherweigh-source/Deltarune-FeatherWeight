@@ -12,7 +12,7 @@ hit_by = noone;
 ai_decision_timer      = 0;
 ai_decision_interval   = 10;
 
-ai_attack_range        = 55;
+ai_attack_range        = sprite_get_width(sprites.slash1)
 ai_special_range       = 120;
 ai_run_range           = 110;
 ai_attack_cooldown     = 0;

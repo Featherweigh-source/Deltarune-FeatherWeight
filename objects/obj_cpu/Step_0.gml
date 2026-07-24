@@ -1,6 +1,3 @@
-// obj_cpu Step
-
-// 1. Target Tracking & Leash Check
 if (variable_instance_exists(id, "hit_by") && instance_exists(hit_by)) {
     if (hit_by.id != id && !hit_by.isDead && hit_by.team_id != team_id) {
         target = hit_by;
@@ -30,7 +27,6 @@ if (!instance_exists(target) || ai_decision_timer <= 0) {
     }
 }
 
-// 2. AI Decision Making
 if (instance_exists(target)) {
     var _dx = target.x - x;
     var _dy = target.y - y;
@@ -55,19 +51,15 @@ if (instance_exists(target)) {
         ai_want_down = false;
         ai_want_hit  = false;
 
-        // Check if CPU has enough TP for a Special (default cost check)
         var _can_use_special = (tp >= 30) && (ai_attack_cooldown <= 0);
 
         if (_can_use_special && random(1) < 0.45) {
-            // Priority 1: Up Special if target is above
             if (_dy < -35 && _dist <= ai_special_range) {
                 ai_state   = "special_up";
             } 
-            // Priority 2: Down Special if close on ground
             else if (onGround && _dist <= ai_attack_range + 20) {
                 ai_state   = "special_down";
             }
-            // Standard melee decision
             else if (_dist <= ai_attack_range && ai_attack_cooldown <= 0) {
                 ai_state = "attack";
             }
@@ -91,7 +83,6 @@ if (instance_exists(target)) {
             ai_state = (random(1) < 0.6) ? "approach" : "walk";
         }
 
-        // Jump decisions
         if (onGround) {
             if (_dy < -30 || (ai_state == "walk" && random(1) < 0.15)) {
                 ai_want_jump = true;
@@ -104,7 +95,6 @@ if (instance_exists(target)) {
         ai_decision_timer--;
     }
 
-    // 3. AI State Execution
     switch (ai_state) {
         case "approach":
             ai_want_left  = (_dx < -4);
@@ -159,7 +149,6 @@ if (ai_jump_hold_timer > 0) {
     ai_want_jump = true; 
 }
 
-// 4. Input Presses Resolution
 var _jump_pressed  = (ai_want_jump  && !ai_prev_jump);
 var _left_pressed  = (ai_want_left  && !ai_prev_left);
 var _right_pressed = (ai_want_right && !ai_prev_right);
@@ -174,7 +163,6 @@ ai_prev_up    = ai_want_up;
 ai_prev_down  = ai_want_down;
 ai_prev_hit   = ai_want_hit;
 
-// 5. Construct Input Struct (All fields fully guaranteed)
 input = {
     left          : ai_want_left,
     right         : ai_want_right,
@@ -195,13 +183,11 @@ var _wall_ahead_left  = place_meeting(x - 8, y, Wall);
 var _wall_ahead_right = place_meeting(x + 8, y, Wall);
 
 if ((ai_want_left && _wall_ahead_left) || (ai_want_right && _wall_ahead_right)) {
-    // If running into a wall, try jumping or turning around
     if (onGround) {
         if (random(1) < 0.5) {
             ai_want_jump = true;
             ai_jump_hold_timer = 10;
         } else {
-            // Cancel current direction to prevent sticking
             ai_want_left  = false;
             ai_want_right = false;
         }
