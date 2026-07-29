@@ -7,6 +7,7 @@ var _right_tap  = keyboard_check_pressed(vk_right) || keyboard_check_pressed(ord
 var _select_key = keyboard_check_pressed(ord("Z")) || keyboard_check_pressed(vk_enter);
 var _back_key   = keyboard_check_pressed(vk_escape) || keyboard_check_pressed(ord("X"));
 
+
 if (menu_state == "listening") {
     if (keyboard_check_pressed(vk_anykey)) {
         if (keyboard_lastkey != vk_escape && keyboard_lastkey != vk_enter) {
