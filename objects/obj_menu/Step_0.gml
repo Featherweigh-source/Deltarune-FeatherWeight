@@ -44,7 +44,10 @@ if (menu_state == "char_select") {
             menu_state = "cpu_select";
         } else {
             audio_stop_all();
-            room_goto(rm_battle_arena_test);
+            global.debug_open = false;
+			global.input_locked = false;
+
+			room_goto(rm_battle_arena_test);
         }
     }
     
@@ -97,7 +100,10 @@ if (menu_state == "cpu_select") {
         global.cpu_needs_respawn = false;
         global.cpu_respawn_timer = 0;
         audio_stop_all();
-        room_goto(rm_battle_arena_test);
+        global.debug_open = false;
+		global.input_locked = false;
+
+		room_goto(rm_battle_arena_test);
     }
     
     if (_back_key) {
@@ -234,3 +240,12 @@ if (_select_key) {
     }
 }
 
+if (room != rm_debug_menu)
+{
+    if (keyboard_check_pressed(vk_f1))
+    {
+        global.previous_room = room;
+        audio_stop_sound(musMenu);
+        room_goto(rm_debug_menu);
+    }
+}
