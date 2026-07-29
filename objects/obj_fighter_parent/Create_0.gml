@@ -106,7 +106,7 @@ mask_index   = spr_player_hitbox;
 
 #region 4. HELPER METHODS & FUNCTIONS
 create_hitbox = function(_attack_data) {
-    var _hb = instance_create_depth(x, y, +1000, obj_hitbox);
+    var _hb = instance_create_depth(x, y, depth - 10000, obj_hitbox);
     
     _hb.owner        = id;
     _hb.sprite_index = _attack_data.sprite;
@@ -117,7 +117,8 @@ create_hitbox = function(_attack_data) {
     _hb.knockback_x  = _attack_data.knockback_x * facingDir;
     _hb.knockback_y  = _attack_data.knockback_y;
     _hb.lifetime     = _attack_data.lifetime;
-    _hb.image_alpha  = 1;  
+    _hb.image_alpha  = 1; 
+    _hb.depth        = depth - 10000; 
     return _hb;
 };
 

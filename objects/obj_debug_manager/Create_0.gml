@@ -56,4 +56,3 @@ if (global.spawn_cpu) {
 		}
 	}
 }
-

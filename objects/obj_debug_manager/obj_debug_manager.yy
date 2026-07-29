@@ -10,8 +10,8 @@
   "name":"obj_debug_manager",
   "overriddenProperties":[],
   "parent":{
-    "name":"debug_menu",
-    "path":"folders/Objects/debug_menu.yy",
+    "name":"Main",
+    "path":"folders/Objects/Main.yy",
   },
   "parentObjectId":null,
   "persistent":false,
