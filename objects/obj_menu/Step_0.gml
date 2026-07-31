@@ -48,7 +48,7 @@ if (menu_state == "char_select") {
             global.debug_open = false;
 			global.input_locked = false;
 
-			room_goto(rm_battle_arena_test);
+			room_goto(rm_debug_menu);
         }
     }
     

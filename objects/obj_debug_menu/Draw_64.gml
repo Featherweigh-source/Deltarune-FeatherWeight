@@ -23,7 +23,7 @@ for (var i = 0; i < array_length(menu_items); i++)
     if (i == menu_index)
     {
         draw_set_color(c_yellow);
-        draw_text(start_x - 15, yy, "■");
+        draw_text(start_x - 15, yy, "█");
     }
     draw_set_color(c_white);
     draw_text(start_x, yy, menu_items[i]);
