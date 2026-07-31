@@ -14,3 +14,5 @@ global.key_down  = vk_down;
 global.key_jump  = vk_space;
 global.key_slash = ord("Z");
 global.key_run   = ord("X");
+
+global.debug_target = id;

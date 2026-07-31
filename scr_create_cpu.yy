@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_create_cpu",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_create_cpu",
+  "parent":{
+    "name":"scripts",
+    "path":"folders/Objects/debug_menu/scripts.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

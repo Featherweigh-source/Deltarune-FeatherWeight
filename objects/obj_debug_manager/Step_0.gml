@@ -49,7 +49,7 @@ if (room != rm_debug_menu)
 {
     if (keyboard_check_pressed(vk_f1))
     {
-		audio_stop_sound(musBackground); // або назва твоєї бойової музики
+		audio_stop_sound(musBackground);
 		room_goto(rm_debug_menu);
     }
 }

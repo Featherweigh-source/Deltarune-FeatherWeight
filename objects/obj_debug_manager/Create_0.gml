@@ -33,26 +33,30 @@ if (!_p1_exists) {
     }
 }
 
-if (global.spawn_cpu) {
-	for (var i = 0; i < global.cpu_count; i++) {
-		var _spawn_x = cpu_spawn_base_x + (i * cpu_spawn_offset);
-		var _cpu_inst = instance_create_layer(_spawn_x, cpu_spawn_y, "Instances", obj_cpu);
-        
-		with (_cpu_inst) {
-			is_cpu      = true;
-			stocks_left = other.stock_limit;
+if (global.spawn_cpu)
+{
+    for (var i = 0; i < global.cpu_count; i++)
+    {
+        var cpu = scr_create_cpu(
+            cpu_spawn_base_x + (i * cpu_spawn_offset),
+            cpu_spawn_y,
+            global.cpu_selected_char,
+            stock_limit
+        );
 
-			if (variable_global_exists("teams_enabled") && global.teams_enabled) {
-				team_id = 2; 
-				} else {
-					team_id = 2 + i;
-				}
-            
-			character_id = string_lower(object_get_name(global.cpu_selected_char));
-			var _data = get_fighter_data(character_id);
-			sprites = _data.sprites;
-			attacks = _data.attacks;
-			sprite_index = sprites.idle;
-		}
-	}
+        if (variable_global_exists("teams_enabled") && global.teams_enabled)
+        {
+            cpu.team_id = 2;
+        }
+        else
+        {
+            cpu.team_id = 2 + i;
+        }
+
+        with (obj_debug_cpu_manager)
+        {
+            array_push(debug_cpus, cpu);
+        }
+    }
 }
+

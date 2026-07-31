@@ -63,3 +63,9 @@ ai_prev_right = false;
 ai_prev_up    = false;
 ai_prev_down  = false;
 ai_prev_hit   = false;
+
+if (!variable_instance_exists(id, "stock"))
+    stock = 3;
+
+if (!variable_instance_exists(id, "is_cpu"))
+    is_cpu = true;

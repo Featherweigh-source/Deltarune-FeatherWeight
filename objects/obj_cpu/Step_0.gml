@@ -1,3 +1,8 @@
+if (variable_global_exists("input_locked") && global.input_locked)
+{
+    exit;
+}
+
 if (variable_instance_exists(id, "hit_by") && instance_exists(hit_by)) {
     if (hit_by.id != id && !hit_by.isDead && hit_by.team_id != team_id) {
         target = hit_by;

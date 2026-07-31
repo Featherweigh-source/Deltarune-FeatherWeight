@@ -52,6 +52,9 @@ function get_fighter_input() {
 team_id    = 1;
 isDead     = false;
 is_cpu     = false;
+
+uses_input = true; // 4 dummy
+
 facingDir  = 1;
 state      = "move";
 stop_frame = 0;
@@ -106,7 +109,7 @@ mask_index   = spr_player_hitbox;
 
 #region 4. HELPER METHODS & FUNCTIONS
 create_hitbox = function(_attack_data) {
-    var _hb = instance_create_depth(x, y, depth - 10000, obj_hitbox);
+    var _hb = instance_create_depth(x, y, +1000, obj_hitbox);
     
     _hb.owner        = id;
     _hb.sprite_index = _attack_data.sprite;
@@ -117,8 +120,7 @@ create_hitbox = function(_attack_data) {
     _hb.knockback_x  = _attack_data.knockback_x * facingDir;
     _hb.knockback_y  = _attack_data.knockback_y;
     _hb.lifetime     = _attack_data.lifetime;
-    _hb.image_alpha  = 1; 
-    _hb.depth        = depth - 10000; 
+    _hb.image_alpha  = 1;  
     return _hb;
 };
 
@@ -165,3 +167,6 @@ draw_fighter_hud = function(_x, _y, _scale) {
     draw_set_valign(fa_top);
 };
 #endregion
+
+debug_flip_enabled = false;
+debug_flip = 1;

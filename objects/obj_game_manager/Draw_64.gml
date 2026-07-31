@@ -1,6 +1,5 @@
 draw_set_font(Font1);
 
-
 var _gui_w = display_get_gui_width();
 var _gui_h = display_get_gui_height();
 

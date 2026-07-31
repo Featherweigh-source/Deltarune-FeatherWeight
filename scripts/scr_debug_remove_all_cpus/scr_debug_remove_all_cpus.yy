@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_debug_remove_all_cpus",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_debug_remove_all_cpus",
+  "parent":{
+    "name":"scripts",
+    "path":"folders/Objects/debug_menu/scripts.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

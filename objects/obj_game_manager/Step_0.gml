@@ -57,52 +57,12 @@ if (global.spawn_cpu) {
             
             if (stock_limit == 0 || _remaining_stocks > 1) {
                 var _spawn_x = cpu_spawn_base_x + (i * cpu_spawn_offset);
-                var _cpu_inst = instance_create_layer(_spawn_x, cpu_spawn_y, "Instances", obj_cpu);
-                
-                with (_cpu_inst) {
-                    is_cpu = true;
-                    team_id = 2;
-                    stocks_left = (other.stock_limit == 0) ? 0 : (_remaining_stocks - 1);
-                    character_id = string_lower(object_get_name(global.cpu_selected_char));
-                    var _data = get_fighter_data(character_id);
-                    sprites = _data.sprites;
-                    attacks = _data.attacks;
-
-                    var _perf_down = struct_exists(_data.perform_special, "down") ? _data.perform_special.down : function() {};
-                    var _perf_up   = struct_exists(_data.perform_special, "up")   ? _data.perform_special.up   : function() {};
-                    var _cast_down = struct_exists(_data.cast_special, "down")    ? _data.cast_special.down    : function() {};
-                    var _cast_up   = struct_exists(_data.cast_special, "up")      ? _data.cast_special.up      : function() {};
-
-                    perform_special = {
-                        down : method(id, _perf_down),
-                        up   : method(id, _perf_up)
-                    };
-
-                    cast_special = {
-                        down : method(id, _cast_down),
-                        up   : method(id, _cast_up)
-                    };
-
-                    sprite_index = sprites.idle;
-                    
-                    target = noone;
-                    ai_decision_timer = 0;
-                    
-                    input = {
-                        left          : false,
-                        right         : false,
-                        up            : false,
-                        down          : false,
-                        left_pressed  : false,
-                        right_pressed : false,
-                        up_pressed    : false,
-                        down_pressed  : false,
-                        jump          : false,
-                        jump_pressed  : false,
-                        run           : false,
-                        hit_pressed   : false
-                    };
-                }
+                scr_create_cpu(
+					_spawn_x,
+					cpu_spawn_y,
+					global.cpu_selected_char,
+					(stock_limit == 0) ? 0 : (_remaining_stocks - 1)
+				);
             }
             
             array_delete(cpu_respawn_queue, i, 1);
