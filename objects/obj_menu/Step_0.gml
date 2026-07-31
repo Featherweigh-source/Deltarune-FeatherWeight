@@ -240,13 +240,3 @@ if (_select_key) {
         }
     }
 }
-
-if (room != rm_debug_menu)
-{
-    if (keyboard_check_pressed(vk_f1))
-    {
-        global.previous_room = room;
-        audio_stop_sound(musMenu);
-        room_goto(rm_debug_menu);
-    }
-}

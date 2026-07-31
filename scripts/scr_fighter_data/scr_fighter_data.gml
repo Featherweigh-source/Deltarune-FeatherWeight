@@ -99,11 +99,11 @@ function get_fighter_data(_character_id) {
             perform_special: {
                 down: function() {
                     xspd = facingDir * atkLungeSpd * 0.5;
-                    audio_play_sound(sndCritical, 8, false);
+                    audio_play_sound(sndrudebuster_swing, 8, false);
                 },
                 up: function() {
                     xspd = facingDir * atkLungeSpd * 0.5;
-                    audio_play_sound(sndCritical, 8, false);
+                    audio_play_sound(sndrudebuster_swing, 8, false);
                 }
             },
 
@@ -242,6 +242,107 @@ function get_fighter_data(_character_id) {
             perform_special: {
                 down: function() {
                     xspd = 0;
+                    audio_play_sound(sndfirespell, 8, false);
+                },
+                up: function() {
+                    audio_play_sound(sndHeal, 8, false);
+                    yspd = jspd * 0.8;
+                }
+            },
+
+            cast_special: {
+                down: function() {
+
+                    var _target_inst = noone;
+                    var _closest_dist = 99999;
+                    var _self = id;
+                    
+                    with (obj_fighter_parent) {
+                        if (id != _self && !isDead) {
+                            var _dist = distance_to_object(_self);
+                            if (_dist < _closest_dist) {
+                                _closest_dist = _dist;
+                                _target_inst = id;
+                            }
+                        }
+                    }
+
+                    var _spawn_x = x + (facingDir * 24);
+                    var _spawn_y = y - 12;
+                    
+                    var _sp_data = attacks.special.down;
+                    var _proj = instance_create_depth(_spawn_x, _spawn_y, depth - 1, obj_rfire);
+                    with (_proj) {
+                        owner = _self;
+                        target = _target_inst;
+                        spd = 6;
+                        lifetime = _sp_data.lifetime;
+                        homing_intensity = 0.35; 
+                        damage = _sp_data.damage;
+                        tp = _sp_data.tpvalue;
+                        knockback_x = _sp_data.knockback_x;
+                        knockback_y = _sp_data.knockback_y;
+                        
+                        if (_target_inst != noone) {
+                            direction = point_direction(x, y, _target_inst.x, _target_inst.y - 16);
+                        } else {
+                            direction = (_self.facingDir == 1) ? 0 : 180;
+                        }
+                        image_angle = direction;
+                    }
+                },
+                up: function() {
+
+                    var _heal_amount = attacks.special.up.damage;
+                    if (hp < max_hp) { 
+                        hp = min(max_hp, hp + _heal_amount); 
+                    }
+                }
+            }
+        },
+        
+        "berdly": {
+            sprites: {
+                healthbar    : ralseihpbar,   
+                idle         : berdly_idle,
+                walk         : berdly_walk,
+                run          : berdly_walk,
+                stop         : ralturn,
+                crouch       : kriscrouch,
+                jump_start   : berdly_fall,
+                jump         : berdly_fall,
+                jump_norm    : berdly_fall,
+                fall_straight: berdly_fall,
+                fall_slanted : berdly_fall,
+                walk_fall    : berdly_fall,
+                land_norm    : berdly_fall,
+                land_slant   : berdly_fall,
+                slash1       : berdly_attack,
+                slash2       : berdly_attack,
+                slash3       : berdly_attack,
+                air_slash1   : berdly_attack,
+                special      : {
+                    down    : berdly_spattack,
+                    up      : berdly_spattack 
+                }
+            },
+
+            attacks: {
+                hp : 100,
+                slash1:     { damage: 2,  knockback_x: 3, knockback_y: -2,  lifetime: 4, tpvalue: 3, sprite: krisslash1hitbox },
+                slash2:     { damage: 3,  knockback_x: 4, knockback_y: -3,  lifetime: 4, tpvalue: 3, sprite: krisslash2hitbox },
+                slash3:     { damage: 4,  knockback_x: 8, knockback_y: -6,  lifetime: 6, tpvalue: 3, sprite: krisslash3hitbox },
+                air_slash1: { damage: 4,  knockback_x: 4, knockback_y:  2,  lifetime: 5, tpvalue: 3, sprite: krisairslashhitbox },
+                
+                special: {
+                    down:    { damage: 15, knockback_x: 6, knockback_y: -3, lifetime: 120, tpcost: 25, tpvalue: 5, sprite: krisslash3hitbox },
+                    up:      { damage: 15, knockback_x: 0, knockback_y: 0,  lifetime: 0,   tpcost: 32, tpvalue: 0, sprite: krisslash3hitbox }
+                }
+            },
+
+            perform_special: {
+                down: function() {
+                    xspd = 0;
                     audio_play_sound(sndCritical, 8, false);
                 },
                 up: function() {
@@ -299,7 +400,7 @@ function get_fighter_data(_character_id) {
                     }
                 }
             }
-        }
+        },
     };
 
     if (struct_exists(roster, _character_id)) {

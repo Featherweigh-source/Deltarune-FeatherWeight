@@ -1,0 +1,26 @@
+{
+  "$GMSound":"v2",
+  "%Name":"sndrudebuster_swing",
+  "audioGroupId":{
+    "name":"audiogroup_default",
+    "path":"audiogroups/audiogroup_default",
+  },
+  "bitDepth":1,
+  "channelFormat":0,
+  "compression":0,
+  "compressionQuality":4,
+  "conversionMode":0,
+  "duration":0.9533787,
+  "exportDir":"",
+  "name":"sndrudebuster_swing",
+  "parent":{
+    "name":"Sounds",
+    "path":"folders/Sounds.yy",
+  },
+  "preload":false,
+  "resourceType":"GMSound",
+  "resourceVersion":"2.0",
+  "sampleRate":44100,
+  "soundFile":"sndrudebuster_swing.wav",
+  "volume":1.0,
+}

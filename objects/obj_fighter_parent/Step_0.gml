@@ -394,9 +394,11 @@ switch (state)
             state = "move"; 
         } else if (stop_frame >= 3) { 
             state = "move"; 
-            sprite_index = sprites.idle; 
-            image_index = 0; 
-            image_speed = 0; 
+            if (sprite_index != sprites.idle) {
+                sprite_index = sprites.idle; 
+                image_index = 0; 
+            }
+            image_speed = 1; 
         }
         break;
 
@@ -440,9 +442,11 @@ switch (state)
                     stop_frame = 0; 
                     image_index = 0; 
                 } else { 
-                    sprite_index = sprites.idle; 
-                    image_index = 0; 
-                    image_speed = 0; 
+                    if (sprite_index != sprites.idle) {
+                        sprite_index = sprites.idle; 
+                        image_index = 0; 
+                    }
+                    image_speed = 1; 
                 }
             }
         }
