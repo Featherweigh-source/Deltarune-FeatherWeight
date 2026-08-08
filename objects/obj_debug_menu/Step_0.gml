@@ -374,21 +374,9 @@ if (keyboard_check_pressed(vk_enter) || keyboard_check_pressed(ord("Z")))
 				break;
 
                 case 4:
-					
-				break;
-
-                case 5:
-                    show_debug_message("Camera");
-                break;
-
-                case 6:
-                    show_debug_message("Developer");
-                break;
-
-                case 7:
 					audio_stop_sound(musBackground);
                     room_goto(rm_main_menu);
-                break;
+				break;
             }
 			
         break;
