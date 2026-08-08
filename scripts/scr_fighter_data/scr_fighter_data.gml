@@ -1,3 +1,6 @@
+global.char_list = [Kris, Susie, Ralsei, Berdly];
+global.char_names = ["Kris", "Susie", "Ralsei", "Berdly"];
+
 function get_fighter_data(_character_id) {
     static roster = {
         "kris": {
@@ -64,7 +67,7 @@ function get_fighter_data(_character_id) {
                 walk         : susie_run,
                 run          : susie_run,
                 stop         : susie_break,
-                crouch       : kriscrouch,
+                crouch       : susiecrouch,
                 jump_start   : susie_jumpprepare,
                 jump         : susiejump,
                 jump_norm    : susiejump,
@@ -85,10 +88,10 @@ function get_fighter_data(_character_id) {
 
             attacks: {
                 hp : 200,
-                slash1:     { damage: 5,  knockback_x: 3, knockback_y: -2,  lifetime: 4, tpvalue: 3, sprite: susieslash1hitbox },
-                slash2:     { damage: 7,  knockback_x: 4, knockback_y: -3,  lifetime: 4, tpvalue: 3, sprite: susieslash2hitbox },
-                slash3:     { damage: 12, knockback_x: 8, knockback_y: -6,  lifetime: 6, tpvalue: 3, sprite: susieslash3hitbox },
-                air_slash1: { damage: 6,  knockback_x: 4, knockback_y:  2,  lifetime: 5, tpvalue: 3, sprite: krisairslashhitbox },
+                slash1:     { damage: 5,  knockback_x: 3, knockback_y: -2,  lifetime: 10, tpvalue: 3, sprite: susieslash1hitbox },
+                slash2:     { damage: 7,  knockback_x: -4, knockback_y: -3,  lifetime: 10, tpvalue: 3, sprite: susieslash2hitbox },
+                slash3:     { damage: 12, knockback_x: 8, knockback_y: -8,  lifetime: 10, tpvalue: 3, sprite: susieslash3hitbox },
+                air_slash1: { damage: 6,  knockback_x: 4, knockback_y:  2,  lifetime: 5, tpvalue: 3, sprite: susieairslash_hitbox },
                 
                 special: {
                     down:    { damage: 25, knockback_x: 12, knockback_y: -4, lifetime: 10, tpcost: 50, tpvalue: 10, sprite: buster },
@@ -228,10 +231,10 @@ function get_fighter_data(_character_id) {
 
             attacks: {
                 hp : 85,
-                slash1:     { damage: 2,  knockback_x: 3, knockback_y: -2,  lifetime: 4, tpvalue: 3, sprite: krisslash1hitbox },
-                slash2:     { damage: 3,  knockback_x: 4, knockback_y: -3,  lifetime: 4, tpvalue: 3, sprite: krisslash2hitbox },
-                slash3:     { damage: 4,  knockback_x: 8, knockback_y: -6,  lifetime: 6, tpvalue: 3, sprite: krisslash3hitbox },
-                air_slash1: { damage: 4,  knockback_x: 4, knockback_y:  2,  lifetime: 5, tpvalue: 3, sprite: krisairslashhitbox },
+                slash1:     { damage: 2,  knockback_x: 1, knockback_y: -2,  lifetime: 20, tpvalue: 3, sprite: Ralhitbox1 },
+                slash2:     { damage: 3,  knockback_x: -2, knockback_y: -3,  lifetime: 4, tpvalue: 3, sprite: ralhitbox2 },
+                slash3:     { damage: 4,  knockback_x: 10, knockback_y: -6,  lifetime: 30, tpvalue: 3, sprite: Ralhitbox1 },
+                air_slash1: { damage: 4,  knockback_x: 4, knockback_y:  2,  lifetime: 5, tpvalue: 3, sprite: Ralhitbox1 },
                 
                 special: {
                     down:    { damage: 15, knockback_x: 6, knockback_y: -3, lifetime: 120, tpcost: 25, tpvalue: 5, sprite: krisslash3hitbox },

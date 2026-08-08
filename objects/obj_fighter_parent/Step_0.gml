@@ -182,7 +182,6 @@ if ((state == "attack" || state == "airattack") && _input.hit_pressed) {
     can_combo_buffer = true; 
 }
 
-
 var _up_held   = keyboard_check(global.key_up)   || (struct_exists(input, "up") && input.up);
 var _down_held = keyboard_check(global.key_down) || (struct_exists(input, "down") && input.down);
 var _hit       = input.hit_pressed || keyboard_check_pressed(global.key_slash);
@@ -196,7 +195,7 @@ if ((state == "move" || state == "crouch" || state == "jumpstart") && (_up_held 
         if (struct_exists(attacks.special, current_special_type)) {
             var _sp_data = attacks.special[$ current_special_type];
             if (is_struct(_sp_data)) {
-                if (struct_exists(_sp_data, "tpcost"))       _sp_cost = _sp_data.tpcost;
+                if (struct_exists(_sp_data, "tpcost"))        _sp_cost = _sp_data.tpcost;
                 else if (struct_exists(_sp_data, "tpvalue")) _sp_cost = _sp_data.tpvalue;
             }
         }
@@ -233,10 +232,10 @@ else if (state == "move" && onGround && _input.hit_pressed) {
     stop_frame = 0; 
     image_index = 0; 
     can_combo_buffer = false;
+    has_created_hitbox = false;
     
     xspd = (facingDir * atkLungeSpd) + (xspd * 0.2); 
     audio_play_sound(sndSlash, 8, false);
-    create_hitbox(attacks.slash1);
 }
 
 if (state == "move" && !onGround && _input.hit_pressed && can_air_attack) {
@@ -247,8 +246,8 @@ if (state == "move" && !onGround && _input.hit_pressed && can_air_attack) {
     stop_frame = 0; 
     image_index = 0; 
     can_combo_buffer = false;
+    has_created_hitbox = false;
     audio_play_sound(sndSlash, 8, false);
-    create_hitbox(attacks.air_slash1);
 }
 
 switch (state)
@@ -303,6 +302,12 @@ switch (state)
             stop_frame += 0.25; 
             image_index = floor(stop_frame);
             
+            // Spawn hitbox on active frame 1
+            if (floor(stop_frame) >= 1 && !has_created_hitbox) {
+                create_hitbox(attacks.slash1);
+                has_created_hitbox = true;
+            }
+            
             if (stop_frame >= sprite_get_number(sprites.slash1) - 1) {
                 if (can_combo_buffer) {
                     combo_step = 2; 
@@ -310,9 +315,9 @@ switch (state)
                     stop_frame = 0; 
                     image_index = 0; 
                     can_combo_buffer = false;
+                    has_created_hitbox = false;
                     xspd = (facingDir * atkLungeSpd) + (xspd * 0.2); 
                     audio_play_sound(sndSlash, 8, false);
-                    create_hitbox(attacks.slash2);
                 } else { 
                     state = "move"; 
                     combo_step = 0; 
@@ -324,6 +329,11 @@ switch (state)
             stop_frame += 0.25; 
             image_index = floor(stop_frame);
             
+            if (floor(stop_frame) >= 1 && !has_created_hitbox) {
+                create_hitbox(attacks.slash2);
+                has_created_hitbox = true;
+            }
+            
             if (stop_frame >= sprite_get_number(sprites.slash2) - 1) {
                 if (can_combo_buffer) {
                     combo_step = 3; 
@@ -331,9 +341,9 @@ switch (state)
                     stop_frame = 0; 
                     image_index = 0; 
                     can_combo_buffer = false;
+                    has_created_hitbox = false;
                     xspd = (facingDir * atkLungeSpd * 1.2) + (xspd * 0.2); 
                     audio_play_sound(sndCritical, 8, false);
-                    create_hitbox(attacks.slash3);
                 } else { 
                     state = "move"; 
                     combo_step = 0; 
@@ -344,6 +354,11 @@ switch (state)
             sprite_index = sprites.slash3;
             if (floor(stop_frame) == 4) stop_frame += 0.05; else stop_frame += 0.25;
             image_index = floor(stop_frame);
+            
+            if (floor(stop_frame) >= 1 && !has_created_hitbox) {
+                create_hitbox(attacks.slash3);
+                has_created_hitbox = true;
+            }
             
             if (stop_frame >= sprite_get_number(sprites.slash3) - 1) { 
                 state = "move"; 
@@ -361,6 +376,11 @@ switch (state)
             var _air_freeze_frame = sprite_get_number(sprites.air_slash1) - 1;
             if (floor(stop_frame) == _air_freeze_frame) stop_frame += 0.05; else stop_frame += 0.25;
             image_index = floor(stop_frame);
+            
+            if (floor(stop_frame) >= 1 && !has_created_hitbox) {
+                create_hitbox(attacks.air_slash1);
+                has_created_hitbox = true;
+            }
             
             if (stop_frame >= sprite_get_number(sprites.air_slash1) - 1) { 
                 state = "move"; 

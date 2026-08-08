@@ -1,23 +1,27 @@
 if (!variable_instance_exists(id, "character_id")) {
     var _char_obj = variable_global_exists("cpu_selected_char") ? global.cpu_selected_char : Kris;
-    character_id = string_lower(object_get_name(_char_obj));
+    var _name_clean = string_replace(string_lower(object_get_name(_char_obj)), "obj_", "");
+    character_id = _name_clean;
 }
-is_cpu = true;
+
 
 event_inherited();
+
+is_cpu  = true; 
+team_id = 2;
 
 target = noone;
 hit_by = noone;
 
-ai_decision_timer      = 0;
-ai_decision_interval   = 10;
+ai_decision_timer    = 0;
+ai_decision_interval = 10;
 
 var _calculated_reach = 55;
 
 var _atk_data = noone;
 if (is_struct(attacks)) {
-    if (struct_exists(attacks, "slash1"))      _atk_data = attacks.slash1;
-    else if (struct_exists(attacks, "atk1"))   _atk_data = attacks.atk1;
+    if (struct_exists(attacks, "slash1"))        _atk_data = attacks.slash1;
+    else if (struct_exists(attacks, "atk1"))     _atk_data = attacks.atk1;
     else if (struct_exists(attacks, "attack1")) _atk_data = attacks.attack1;
 }
 
@@ -36,7 +40,7 @@ else if (is_struct(sprites) && struct_exists(sprites, "slash1")) {
     _calculated_reach = max(45, _spr_w - _x_offset);
 }
 
-ai_attack_range = max(40, _calculated_reach - 10);
+ai_attack_range        = max(40, _calculated_reach - 10);
 ai_special_range       = 120;
 ai_run_range           = 110;
 ai_attack_cooldown     = 0;
@@ -66,6 +70,3 @@ ai_prev_hit   = false;
 
 if (!variable_instance_exists(id, "stock"))
     stock = 3;
-
-if (!variable_instance_exists(id, "is_cpu"))
-    is_cpu = true;

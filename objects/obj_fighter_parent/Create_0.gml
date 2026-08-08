@@ -53,7 +53,7 @@ team_id    = 1;
 isDead     = false;
 is_cpu     = false;
 
-uses_input = true; // 4 dummy
+uses_input = true;
 
 facingDir  = 1;
 state      = "move";
@@ -92,9 +92,10 @@ dash_timer_left  = 0;
 is_sprinting     = false;
 skid_speed       = 0;
 
-can_combo_buffer = false;
-can_air_attack   = true;
-combo_step       = 0;
+can_combo_buffer   = false;
+has_created_hitbox = false;
+can_air_attack     = true;
+combo_step         = 0;
 
 BufferTime         = 6;
 JumpKeyBuffered    = false;
@@ -108,21 +109,58 @@ mask_index   = spr_player_hitbox;
 #endregion
 
 #region 4. HELPER METHODS & FUNCTIONS
-create_hitbox = function(_attack_data) {
-    var _hb = instance_create_depth(x, y, +1000, obj_hitbox);
+function create_hitbox(_hitbox_input, _damage = 0, _knockback = 0, _dir = facingDir, _lifespan = 10) {
+    var _sprite = _hitbox_input;
+    var _dmg    = _damage;
+    var _kb_x   = _knockback;
+    var _kb_y   = 0;
+    var _d      = _dir;
+    var _life   = _lifespan;
     
-    _hb.owner        = id;
-    _hb.sprite_index = _attack_data.sprite;
-    _hb.mask_index   = _attack_data.sprite;
-    _hb.image_xscale = facingDir;
-    _hb.damage       = _attack_data.damage;
-    _hb.tp           = _attack_data.tpvalue;
-    _hb.knockback_x  = _attack_data.knockback_x * facingDir;
-    _hb.knockback_y  = _attack_data.knockback_y;
-    _hb.lifetime     = _attack_data.lifetime;
-    _hb.image_alpha  = 1;  
+    if (is_struct(_hitbox_input)) {
+        if (struct_exists(_hitbox_input, "sprite"))       _sprite = _hitbox_input.sprite;
+        else if (struct_exists(_hitbox_input, "hitbox")) _sprite = _hitbox_input.hitbox;
+        
+        if (struct_exists(_hitbox_input, "damage"))      _dmg  = _hitbox_input.damage;
+        if (struct_exists(_hitbox_input, "dir"))         _d    = _hitbox_input.dir;
+        else                                             _d    = facingDir;
+
+        if (struct_exists(_hitbox_input, "knockback_x"))   _kb_x = _hitbox_input.knockback_x;
+        else if (struct_exists(_hitbox_input, "knockback")) _kb_x = _hitbox_input.knockback;
+        else if (struct_exists(_hitbox_input, "kb"))        _kb_x = _hitbox_input.kb;
+        
+        _kb_x *= _d;
+
+        if (struct_exists(_hitbox_input, "knockback_y"))   _kb_y = _hitbox_input.knockback_y;
+        if (struct_exists(_hitbox_input, "lifetime"))      _life = _hitbox_input.lifetime;
+        else if (struct_exists(_hitbox_input, "lifespan")) _life = _hitbox_input.lifespan;
+    } else {
+        _kb_x *= _d;
+    }
+
+    if (!sprite_exists(_sprite)) {
+        _sprite = spr_player_hitbox;
+    }
+
+    var _hb = instance_create_layer(x, y, layer, obj_hitbox, {
+        owner        : id,
+        team_id      : variable_instance_exists(id, "team_id") ? team_id : 1,
+        damage       : _dmg,
+        knockback_x  : _kb_x,
+        knockback_y  : _kb_y,
+        knockback    : _kb_x,
+        dir          : _d,
+        lifespan     : _life,
+        max_lifespan : _life,
+        sprite_index : _sprite,
+        mask_index   : _sprite,
+        image_xscale : facingDir,
+        image_yscale : image_yscale,
+        image_speed  : 0
+    });
+    
     return _hb;
-};
+}
 
 draw_fighter_hud = function(_x, _y, _scale) {
     if (!variable_struct_exists(sprites, "healthbar")) exit;

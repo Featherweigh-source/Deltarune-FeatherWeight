@@ -21,7 +21,6 @@ cast_special = {
     up   : method(id, _cast_up)
 };
 
-// 4. Display and Control settings
 var _monitor_w = display_get_width();
 var _monitor_h = display_get_height();
 surface_resize(application_surface, _monitor_w, _monitor_h);
@@ -36,4 +35,3 @@ global.key_slash = ord("Z");
 global.key_run   = ord("X");
 
 global.debug_target = id;
-

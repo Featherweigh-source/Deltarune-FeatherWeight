@@ -10,15 +10,18 @@ draw_sprite_ext(
     image_alpha
 );
 
-if (global.debug_show_hitboxes)
+if instance_exists(obj_debug_menu) 
 {
-    draw_set_color(c_aqua);
+    if (global.debug_show_hitboxes)
+    {
+        draw_set_color(c_aqua);
 
-    draw_rectangle(
-        bbox_left,
-        bbox_top,
-        bbox_right,
-        bbox_bottom,
-        true
-    );
+        draw_rectangle(
+            bbox_left,
+            bbox_top,
+            bbox_right,
+            bbox_bottom,
+            true
+        );
+    }
 }

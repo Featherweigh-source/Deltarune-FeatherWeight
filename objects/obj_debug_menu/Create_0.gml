@@ -15,12 +15,12 @@ hp_min = 0;
 hp_max = 200;
 hp_bar_segments = 10;
 
-spawn_character_objects = [Kris, Susie, Ralsei];
-spawn_character_names = ["Kris", "Susie", "Ralsei"];
+spawn_character_objects = global.char_list;
+spawn_character_names = global.char_names;
 spawn_character_index = 0;
 
-char_list = [Kris, Susie, Ralsei];
-char_names = ["Kris", "Susie", "Ralsei"];
+char_list = global.char_list;
+char_names = global.char_names;
 cpu_char_index = 0;
 
 animation_names = [];

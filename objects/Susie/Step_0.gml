@@ -2,6 +2,7 @@ if (variable_global_exists("input_locked") && global.input_locked)
 {
     exit;
 }
+
 if (!variable_global_exists("key_left"))  global.key_left  = vk_left;
 if (!variable_global_exists("key_right")) global.key_right = vk_right;
 if (!variable_global_exists("key_jump"))  global.key_jump  = vk_space;
@@ -30,4 +31,3 @@ if (state == "stop" && (input.left || input.right)) {
 }
 
 event_inherited();
-
